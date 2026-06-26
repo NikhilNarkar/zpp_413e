@@ -1,0 +1,23 @@
+{
+  "generationParameters": {
+    "generationDate": "Fri Jun 26 2026 08:07:56 GMT+0000 (Coordinated Universal Time)",
+    "generatorPlatform": "SAP Business Application Studio",
+    "serviceType": "OData URL",
+    "metadataFilename": "",
+    "serviceUrl": "https://my433482-api.s4hana.cloud.sap/sap/opu/odata4/sap/zsb_413e/srvd_a2x/sap/zsd_413e_hd/0001",
+    "appName": "zpp_413e",
+    "appTitle": "413 E",
+    "appDescription": "An SAP Fiori application.",
+    "appNamespace": "",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.142.12",
+    "enableEslint": true,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.27.0",
+    "template": "Basic V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}
