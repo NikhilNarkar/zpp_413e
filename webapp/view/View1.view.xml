@@ -38,7 +38,7 @@
                             </Input>
 
                             <Label id="_IDGenLabel1" text="Sales Order" required="true"/>
-                            <Input id="inputSalesOrder"
+                            <!-- <Input id="inputSalesOrder"
                                    value="{local>/selection/salesOrder}" showValueHelp="true"
                                    showSuggestion="true"
                                    suggest=".onSalesOrderSuggest"
@@ -64,17 +64,17 @@
                                 <suggestionItems>
                                     <core:ListItem id="_IDGenListItem3" text="{SalesOrderItem}" key="{SalesOrderItem}" />
                                 </suggestionItems>
-                            </Input>
+                            </Input> -->
 
-                                   <Label id="_IDGenLabelMat" text="Material" />
+                                   <!-- <Label id="_IDGenLabelMat" text="Material" />
                             <Input id="inputMaterial" 
-                                   value="{local>/selection/material}" 
+                                   value="{local>material}" 
                                    editable="false" />
 
                             <Label id="_IDGenLabelMatDesc" text="Material Description" />
                             <Input id="inputMaterialDesc" 
-                                   value="{local>/selection/materialDescription}" 
-                                   editable="false" />
+                                   value="{local>materialDescription}" 
+                                   editable="false" /> -->
 
                             <Label id="_IDGenLabelToSalesOrder" text="To Sales Order" required="true"/>
                             <Input id="inputToSalesOrder"
@@ -231,9 +231,19 @@
                         <Column id="_IDGenColumn13"  width="8rem">
                             <Text id="_IDGenText22"  text="Sales Order" />
                         </Column>
+                        
+                  
 
                         <Column id="_IDGenColumn14"   width="6rem">
                             <Text id="_IDGenText29"   text="Item" />
+                        </Column>
+
+                              <Column id="_IDGenColumnToSalesOrder"  width="8rem">
+                            <Text id="_IDGenTextToSalesOrder"  text="To Sales Order" />
+                        </Column>
+
+                        <Column id="_IDGenColumnToSalesOrderItem"  width="8rem">
+                            <Text id="_IDGenTextToSalesOrderItem"  text="To Sales Order Item" />
                         </Column>
 
                         <Column id="_IDGenColumn7" width="8rem" hAlign="End">
@@ -258,8 +268,11 @@
                                 <Text id="_IDGenText27" text="{local>/selection/fromSloc}" />
                                 <Text id="_IDGenText28" text="{local>/selection/toSloc}" />
 
-                                <Text id="_IDGenText30" text="{local>/selection/salesOrder}" />
-                                <Text id="_IDGenText31" text="{local>/selection/salesOrderItem}" />
+                                <Text id="_IDGenText30" text="{local>salesOrder}" />
+                                <Text id="_IDGenText31" text="{local>salesOrderItem}" />
+
+                                <Text id="_IDGenText39" text="{local>toSalesOrder}" />
+                                <Text id="_IDGenText40" text="{local>toSalesOrderItem}" />
                                 
                                 <Text id="_IDGenText16" text="{local>qty}" />
                                 <Text id="_IDGenText17" text="{local>uom}" />

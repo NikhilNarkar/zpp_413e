@@ -25,25 +25,21 @@ sap.ui.define([
             var oSelection = oLocalModel.getProperty("/selection");
 
             var sPlant = oSelection.plant;
-            var sSalesOrder = oSelection.salesOrder;
-            var sSalesOrderItem = oSelection.salesOrderItem;
             var sFromSloc = oSelection.fromSloc;
 
-            if (sSalesOrder && sSalesOrderItem) {
-                this.onSalesOrderItemChange();
-            }
-
-
+            // if (sSalesOrder && sSalesOrderItem) {
+            //     this.onSalesOrderItemChange();
+            // }
 
             // Only fetch batches if all 4 required fields are filled
-            if (!sPlant || !sSalesOrder || !sSalesOrderItem || !sFromSloc) {
+            if (!sPlant || !sFromSloc) {
                 if (oLocalModel) {
                     oLocalModel.setProperty("/allBatches", []);
                 }
                 return; 
             }
 
-            this._fetchBatchesInBackground(sPlant, sSalesOrder, sSalesOrderItem, sFromSloc);
+            this._fetchBatchesInBackground(sPlant, sFromSloc);
         },
 
         // ==========================================
@@ -573,22 +569,20 @@ sap.ui.define([
         // ==========================================
         // BACKGROUND CACHE LOGIC
         // ==========================================
-        _fetchBatchesInBackground: function (sPlant, sSalesOrder, sSalesOrderItem, sFromSloc) {
+        _fetchBatchesInBackground: function (sPlant, sFromSloc) {
             var oView = this.getView();
             var oModel = oView.getModel(); // Primary OData V4 Model
             
-            console.log("Attempting fetch...", sPlant, sSalesOrder, sSalesOrderItem, sFromSloc);
+            console.log("Attempting fetch...", sPlant, sFromSloc);
 
             // Added all four required filters mapped to the ZI_GET_BATCH entity
             var aFilters = [
                 new Filter("Plant", FilterOperator.EQ, sPlant),
-                new Filter("SDDocument", FilterOperator.EQ, sSalesOrder),
-                new Filter("SDDocumentItem", FilterOperator.EQ, sSalesOrderItem),
                 new Filter("StorageLocation", FilterOperator.EQ, sFromSloc) // Ensure property name matches your CDS view
             ];
 
             var mParameters = {
-                "$select": "Batch,Plant,StorageLocation,Material,ProductDescription,QTY,MaterialBaseUnit"
+                "$select": "Batch,Plant,StorageLocation,Material,ProductDescription,QTY,MaterialBaseUnit,SDDocument,SDDocumentItem"
             };
 
             // Entity exposed in ZSD_413E_HD
@@ -636,9 +630,10 @@ sap.ui.define([
 
                var sFromSloc = oLocalModel.getProperty("/selection/fromSloc");
              var sToSloc = oLocalModel.getProperty("/selection/toSloc");
-             var sSalesOrder = oLocalModel.getProperty("/selection/salesOrder");
-             var sSalesOrderItem = oLocalModel.getProperty("/selection/salesOrderItem");
 
+              var sToSalesOrder = oLocalModel.getProperty("/selection/toSalesOrder");
+             var sToSalesOrderItem = oLocalModel.getProperty("/selection/toSalesOrderItem");
+           
             // 1. Split the input string by any whitespace (handles spaces, tabs, and newlines!)
             var aInputBatches = sInputValue.split(/\s+/);
             
@@ -678,8 +673,10 @@ sap.ui.define([
                     description: oFoundBatch.ProductDescription,
                     fromSloc:    sFromSloc,
                     toSloc:      sToSloc,
-                    salesOrder:  sSalesOrder,
-                    salesOrderItem: sSalesOrderItem,
+                    salesOrder:  oFoundBatch.SDDocument,
+                    salesOrderItem: oFoundBatch.SDDocumentItem,
+                    toSalesOrder : sToSalesOrder,
+                    toSalesOrderItem : sToSalesOrderItem,
                     plant:       oFoundBatch.Plant,
                     qty:         oFoundBatch.QTY,
                     uom:         oFoundBatch.MaterialBaseUnit
@@ -723,76 +720,6 @@ sap.ui.define([
             oInput.setValue("");
             retainFocus();
         },
-
-        // ==========================================
-        // SCAN VALIDATION & APPEND LOGIC
-        // ==========================================
-        // onAddBatch: function (oEvent) {
-        //     var oView = this.getView();
-        //     var oInput = oView.byId("batchInput");
-            
-        //     var sScannedBatch = oInput.getValue().trim(); 
-        //     var oLocalModel = oView.getModel("local");
-
-        //     var retainFocus = function() {
-        //         setTimeout(function() {
-        //             oInput.focus();
-        //         }, 100);
-        //     };
-
-        //     if (!sScannedBatch) {
-        //         sap.m.MessageToast.show("Please enter or scan a batch.");
-        //         return;
-        //     }
-
-        //     var aAllBatches = oLocalModel.getProperty("/allBatches") || [];
-        //     var aScanned = oLocalModel.getProperty("/scannedBatches") || [];
-        //      var sFromSloc = oLocalModel.getProperty("/selection/fromSloc");
-        //      var sToSloc = oLocalModel.getProperty("/selection/toSloc");
-        //      var sSalesOrder = oLocalModel.getProperty("/selection/salesOrder");
-        //      var sSalesOrderItem = oLocalModel.getProperty("/selection/salesOrderItem");
-
-        //     var oFoundBatch = aAllBatches.find(function(b) {
-        //         return b.Batch === sScannedBatch;
-        //     });
-
-        //     if (!oFoundBatch) {
-        //         sap.m.MessageBox.error("Batch " + sScannedBatch + " not found or has 0 quantity.");
-        //         oInput.setValue(""); 
-        //         return;
-        //     }
-
-        //     var bAlreadyScanned = aScanned.some(function(b) {
-        //         return b.batch === sScannedBatch;
-        //     });
-
-        //     if (bAlreadyScanned) {
-        //         sap.m.MessageToast.show("Batch " + sScannedBatch + " is already added.");
-        //         oInput.setValue("");
-        //         return;
-        //     }
-
-        //     aScanned.push({
-        //         batch:         oFoundBatch.Batch,
-        //         // batchTransfer: "", // Defaults empty for manual user entry
-        //         material:      oFoundBatch.Material,
-        //         description:   oFoundBatch.ProductDescription,
-        //         fromSloc:      sFromSloc,
-        //         toSloc:        sToSloc,
-        //         salesOrder:   sSalesOrder,
-        //         salesOrderItem: sSalesOrderItem,
-        //         plant:         oFoundBatch.Plant,
-        //         qty:           oFoundBatch.QTY,
-        //         uom:           oFoundBatch.MaterialBaseUnit
-        //     });
-
-        //     oLocalModel.setProperty("/scannedBatches", aScanned);
-        //     oInput.setValue("");
-
-        //     this._calculateTotalYield();
-
-        //     retainFocus();
-        // },
 
         // ==========================================
         // DELETE SELECTED BATCHES
@@ -849,8 +776,8 @@ sap.ui.define([
             
             oLocalModel.setProperty("/scannedBatches", []);
             oLocalModel.setProperty("/selection/plant", "");
-            oLocalModel.setProperty("/selection/salesOrder", "");
-            oLocalModel.setProperty("/selection/salesOrderItem", "");
+            // oLocalModel.setProperty("/selection/salesOrder", "");
+            // oLocalModel.setProperty("/selection/salesOrderItem", "");
             oLocalModel.setProperty("/selection/material", "");
             oLocalModel.setProperty("/selection/materialDescription", "");
             oLocalModel.setProperty("/selection/fromSloc", "");
@@ -872,22 +799,41 @@ sap.ui.define([
             var oSelection = oLocalModel.getProperty("/selection");
             var aScannedBatches = oLocalModel.getProperty("/scannedBatches") || [];
 
-            if (!oSelection.plant || !oSelection.salesOrder || !oSelection.salesOrderItem || 
-                !oSelection.fromSloc || !oSelection.toSloc || !oSelection.postingDate) {
+            // if (!oSelection.plant || !oSelection.fromSloc || !oSelection.toSloc || !oSelection.postingDate) {
                 
-                MessageBox.error("Please fill in all mandatory details before submitting.");
-                return;
-            }
+            //     MessageBox.error("Please fill in all mandatory details before submitting.");
+            //     return;
+            // }
 
-            if (aScannedBatches.length === 0) {
-                MessageBox.error("Please scan at least one batch into the table.");
-                return;
-            }
+            // if (aScannedBatches.length === 0) {
+            //     MessageBox.error("Please scan at least one batch into the table.");
+            //     return;
+            // }
+
+            if (!oSelection.plant || !oSelection.fromSloc || !oSelection.toSloc || !oSelection.postingDate ||
+    !oSelection.toSalesOrder || !oSelection.toSalesOrderItem) {
+    MessageBox.error("Please fill in all mandatory details before submitting.");
+    return;
+}
+
+if (aScannedBatches.length === 0) {
+    MessageBox.error("Please scan at least one batch into the table.");
+    return;
+}
+
+var bInvalidItem = aScannedBatches.some(function (oBatch) {
+    return !oBatch.salesOrder || !oBatch.salesOrderItem;
+});
+
+if (bInvalidItem) {
+    MessageBox.error("Each line item must have Sales Order and Sales Order Item.");
+    return;
+}
 
             var oDateFormat = DateFormat.getDateInstance({ pattern: "yyyy-MM-dd" });
             var sFormattedDate = oDateFormat.format(oSelection.postingDate);
-            var sSalesOrder = oSelection.salesOrder.padStart(10, '0');
-            var sSalesOrderItem = oSelection.salesOrderItem.padStart(6, '0');
+            // var sSalesOrder = oSelection.salesOrder.padStart(10, '0');
+            // var sSalesOrderItem = oSelection.salesOrderItem.padStart(6, '0');
             
             // Format To fields
             var sToSalesOrder = oSelection.toSalesOrder ? oSelection.toSalesOrder.padStart(10, '0') : "";
@@ -899,16 +845,17 @@ sap.ui.define([
                     "Material": oBatch.material,
                     "Qty": String(oBatch.qty), 
                     "Unit": oBatch.uom,
-                    "Batch": oBatch.batch
+                    "Batch": oBatch.batch,
+                    "SalesOrder": (oBatch.salesOrder || "").trim().padStart(10, "0"),
+                    "SalesOrderItem": (oBatch.salesOrderItem || "").trim().padStart(6, "0"),
+                    "ToSalesOrder": (oBatch.toSalesOrder || "").trim().padStart(10, "0"),
+                    "ToSalesOrderItem": (oBatch.toSalesOrderItem || "").trim().padStart(6, "0")
+
                     // "ToBatch": oBatch.batchTransfer || ""
                 };
             });
 
             var oPayload = {
-                "Salesorder": sSalesOrder,          
-                "Salesorderitem": sSalesOrderItem,
-                "Tosalesorder": sToSalesOrder,
-                "Tosalesorderitem": sToSalesOrderItem,
                 "Plant": oSelection.plant,
                 "PostingDate": sFormattedDate,
                 "StorlocFrom": oSelection.fromSloc,
