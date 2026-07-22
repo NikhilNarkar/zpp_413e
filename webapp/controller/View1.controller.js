@@ -569,36 +569,43 @@ sap.ui.define([
         // ==========================================
         // BACKGROUND CACHE LOGIC
         // ==========================================
-       _fetchBatchesInBackground: function (sPlant, sFromSloc) {
-    var oView = this.getView();
-    var oModel = oView.getModel();
-
-    console.log("Attempting fetch...", sPlant, sFromSloc);
-
-    var aFilters = [
-        new Filter("Plant", FilterOperator.EQ, sPlant),
-        new Filter("StorageLocation", FilterOperator.EQ, sFromSloc)
-    ];
-
-    var mParameters = {
-        "$select": "Batch,Plant,StorageLocation,Material,ProductDescription,QTY,MaterialBaseUnit,SDDocument,SDDocumentItem"
-    };
-
-    var oListBinding = oModel.bindList("/ZI_GET_BATCH", null, null, aFilters, mParameters);
-
-    oListBinding.requestContexts(0, Infinity).then(function (aContexts) {
-        var aAllBatches = aContexts.map(function (oContext) {
-            return oContext.getObject();
-        });
-
-        console.log("Fetched batches:", aAllBatches);
-        oView.getModel("local").setProperty("/allBatches", aAllBatches);
-        sap.m.MessageToast.show("Scanner Ready: Loaded " + aAllBatches.length + " batches for this order.");
-    }).catch(function (oError) {
-        console.error("Fetch failed:", oError);
-        sap.m.MessageToast.show("Failed to load background batches.");
-    });
-},
+       // ==========================================
+        _fetchBatchesInBackground: function (sPlant, sFromSloc) {
+            var oView = this.getView();
+            var oModel = oView.getModel(); // Primary OData V4 Model
+           
+            console.log("Attempting fetch...", sPlant, sFromSloc);
+ 
+            // Added all four required filters mapped to the ZI_GET_BATCH entity
+            var aFilters = [
+                new Filter("Plant", FilterOperator.EQ, sPlant),
+                new Filter("StorageLocation", FilterOperator.EQ, sFromSloc) // Ensure property name matches your CDS view
+            ];
+ 
+            var mParameters = {
+                "$select": "Batch,Plant,StorageLocation,Material,ProductDescription,QTY,MaterialBaseUnit,SDDocument,SDDocumentItem"
+            };
+ 
+            // Entity exposed in ZSD_413E_HD
+            var oListBinding = oModel.bindList("/ZI_GET_BATCH", null, null, aFilters, mParameters);
+ 
+       
+           
+            oListBinding.requestContexts(0, 10000).then(function (aContexts) {
+                var aAllBatches = aContexts.map(function (oContext) {
+                    return oContext.getObject();
+                });
+               
+                console.log("Fetched batches:", aAllBatches);
+                oView.getModel("local").setProperty("/allBatches", aAllBatches);
+                sap.m.MessageToast.show("Scanner Ready: Loaded " + aAllBatches.length + " batches for this order.");
+               
+            }).catch(function(oError) {
+                console.error("Fetch failed:", oError);
+                sap.m.MessageToast.show("Failed to load background batches.");
+            });
+        },
+ 
 
         onAddBatch: function (oEvent) {
             var oView = this.getView();
