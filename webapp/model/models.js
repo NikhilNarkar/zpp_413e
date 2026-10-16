@@ -18,7 +18,7 @@ function (JSONModel, Device) {
 
         /**
          * Main JSON model for the 311E batching selection and scanning screen.
-         * Contains form inputs, background cache, and the active table array.
+         * Contains form inputs and the active table array.
          */
         createLocalModel: function () {
             var oModel = new JSONModel({
@@ -39,10 +39,7 @@ function (JSONModel, Device) {
                     materialDescription: "" // NEW: Added for Material Description
                 },
 
-                // 2. Background Data (e.g., Loaded from your backend view)
-                allBatches: [],
-
-                // 3. Active Table Data (Scanned items shown on UI)
+                // 2. Active Table Data (Scanned items shown on UI)
                 // When adding to this array via your controller, your object structure should look like:
                 // { batch: "...", batchTransfer: "", material: "...", description: "...", qty: "...", uom: "..." }
                 scannedBatches: []

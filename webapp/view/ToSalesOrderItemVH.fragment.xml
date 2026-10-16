@@ -1,7 +1,7 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
     <TableSelectDialog id="_IDGenTableSelectDialog2"
         title="Select Item"
-        items="{/ZI_SALESITEM_VH}"
+        items="{ path: '/ZI_SALESITEM_VH', parameters: { $select: 'SalesOrder,SalesOrderItem,Material,ProductDescription' } }"
         confirm=".onToItemVHConfirm"
         contentWidth="600px"          
         contentHeight="400px"
@@ -13,6 +13,8 @@
             <cells>
                 <Text id="_IDGenText23" text="{SalesOrderItem}" />
                 <Text id="_IDGenText24" text="{SalesOrder}" />
+                <Text id="toItemMaterial" text="{Material}" />
+                <Text id="toItemDescription" text="{ProductDescription}" />
             </cells>
         </ColumnListItem>
         
@@ -22,6 +24,12 @@
             </Column>
             <Column id="_IDGenColumn11">
                 <header><Text id="_IDGenText26" text="Sales Order" /></header>
+            </Column>
+            <Column id="toItemMaterialColumn">
+                <header><Text id="toItemMaterialHeader" text="Material" /></header>
+            </Column>
+            <Column id="toItemDescriptionColumn">
+                <header><Text id="toItemDescriptionHeader" text="Description" /></header>
             </Column>
         </columns>
         

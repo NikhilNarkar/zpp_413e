@@ -96,7 +96,8 @@
                                 showValueHelp="true"
                                 showSuggestion="true"
                                 suggest=".onToSalesOrderItemSuggest"
-                                suggestionItems="{ path: '/ZI_SALESITEM_VH', templateShareable: false }"
+                                suggestionItemSelected=".onToItemSuggestionSelected"
+                                suggestionItems="{ path: '/ZI_SALESITEM_VH', parameters: { $select: 'SalesOrder,SalesOrderItem,Material,ProductDescription' }, templateShareable: false }"
                                 valueHelpRequest=".onToSalesOrderItemValueHelp"
                                 placeholder="Enter To Sales Order Item">
                                 <suggestionItems>
