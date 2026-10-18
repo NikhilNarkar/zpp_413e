@@ -8,6 +8,7 @@
       "version": "0.0.1"
     },
     "title": "{{appTitle}}",
+    "subTitle": "{{appSubtitle}}",
     "description": "{{appDescription}}",
     "resources": "resources.json",
     "sourceTemplate": {
@@ -32,6 +33,7 @@
           "semanticObject": "zpp_413e",
           "action": "Display",
           "title": "{{zpp_413e-Display.flpTitle}}",
+          "subTitle": "{{appSubtitle}}",
           "signature": {
             "parameters": {},
             "additionalParameters": "allowed"
